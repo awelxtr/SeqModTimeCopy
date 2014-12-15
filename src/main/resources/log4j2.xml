@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="debug">
+	<Properties>
+		<Property name="log-path">logs</Property>
+	</Properties>
+
+	<Appenders>
+		<RollingFile name="file-log" fileName="${log-path}/ticketManager.log" filePattern="${log-path}/ticketManager-%d{yyyy-MM-dd}.log">
+			<PatternLayout>
+				<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%-5level] [%t] %c{1} - %msg%n</pattern>
+			</PatternLayout>
+			<Policies>
+				<TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+			</Policies>
+		</RollingFile>
+		<Console name="console" target="SYSTEM_OUT">
+			<PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%-5level] [%t] %c{1} - %msg%n"/>
+		</Console>
+	</Appenders>
+	<Loggers>
+		<Logger name="com.awelxtr" level="ALL" additivity="false">
+			<appender-ref ref="file-log" level="ALL"/>
+			<appender-ref ref="console"/>
+		</Logger>
+		<Root level="ALL" additivity="false">
+			<appender-ref ref="console"/>
+		</Root>
+	</Loggers>
+</Configuration>
