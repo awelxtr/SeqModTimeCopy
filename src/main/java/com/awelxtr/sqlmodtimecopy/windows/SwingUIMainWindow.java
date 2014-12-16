@@ -82,8 +82,6 @@ public class SwingUIMainWindow extends JFrame {
 		lowerArea.setLayout(new BoxLayout(lowerArea,BoxLayout.LINE_AXIS));
 		fileListScroll = new JScrollPane();
 		fileList = new JList();
-		BasicDirectoryModel fileListModel = new BasicDirectoryModel(dirChooser); 
-		fileList.setModel(fileListModel);
 		fileListScroll.add(fileList);
 		lowerArea.add(fileListScroll);
 		buttonHousing = new JPanel();
