@@ -6,6 +6,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.File;
+import java.io.FileFilter;
+import java.util.Arrays;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -16,7 +18,8 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
-import javax.swing.plaf.basic.BasicDirectoryModel;
+
+import com.awelxtr.seqmodtimecopy.utils.SimpleSortListModel;
 
 public class SwingUIMainWindow extends JFrame {
 
@@ -82,6 +85,15 @@ public class SwingUIMainWindow extends JFrame {
 		lowerArea.setLayout(new BoxLayout(lowerArea,BoxLayout.LINE_AXIS));
 		fileListScroll = new JScrollPane();
 		fileList = new JList();
+		fileList.setModel(new SimpleSortListModel(Arrays.asList(new File(pathText.getText()).listFiles(new FileFilter(){
+
+			@Override
+			public boolean accept(File pathname) {
+				// TODO Auto-generated method stub
+				return !pathname.isDirectory();
+			}
+			
+		}))));
 		fileListScroll.add(fileList);
 		lowerArea.add(fileListScroll);
 		buttonHousing = new JPanel();
