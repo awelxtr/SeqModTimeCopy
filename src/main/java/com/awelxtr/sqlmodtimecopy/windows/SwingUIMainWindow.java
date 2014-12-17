@@ -29,30 +29,32 @@ public class SwingUIMainWindow extends JFrame {
 	
 	private JPanel overlay;
 	private JPanel filePathPane;
-	private JPanel lowerArea;
+	private JPanel centerArea;
 	private JPanel buttonHousing;
 	private JScrollPane fileListScroll;
 	private JTextField pathText;
 	private JButton browse;
-	private JList fileList;
+	private JList<String> fileList;
 	private JButton top;
 	private JButton up;
 	private JButton down;
 	private JButton bottom;
+	private JPanel bottomPanel;
+	private JButton set;
 	
 	private boolean modified = false;
 	
 	public SwingUIMainWindow(){
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		this.setTitle("Que feo eres papá");
+		this.setTitle("Que feo eres pap\u00E1");
 		overlay = new JPanel();
 		this.setLayout(new BorderLayout());
 		this.add(overlay,BorderLayout.CENTER);
-		overlay.setLayout(new BoxLayout(overlay,BoxLayout.PAGE_AXIS));
+		overlay.setLayout(new BorderLayout());
 		
 		filePathPane = new JPanel();
 		filePathPane.setLayout(new BoxLayout(filePathPane,BoxLayout.LINE_AXIS));
-		overlay.add(filePathPane);
+		overlay.add(filePathPane,BorderLayout.NORTH);
 		pathText = new JTextField("C:\\");
 		pathText.addKeyListener(new KeyAdapter(){
 			@Override
@@ -77,7 +79,6 @@ public class SwingUIMainWindow extends JFrame {
 					//meeeec
 					return;
 				}
-				dirChooser.showOpenDialog(null);
 				if (dirChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION){
 					pathText.setText(dirChooser.getSelectedFile().getAbsolutePath());
 					changeDir();
@@ -87,10 +88,10 @@ public class SwingUIMainWindow extends JFrame {
 		});
 		filePathPane.add(browse);
 		
-		lowerArea = new JPanel();
-		lowerArea.setLayout(new BoxLayout(lowerArea,BoxLayout.LINE_AXIS));
-		fileListScroll = new JScrollPane();
-		fileList = new JList();
+		centerArea = new JPanel();
+		centerArea.setLayout(new BoxLayout(centerArea,BoxLayout.LINE_AXIS));
+		
+		fileList = new JList<String>();
 		//see changeDir()
 		fileList.setModel(new SimpleSortListModel(Arrays.asList(new File(pathText.getText()).listFiles(new FileFilter(){
 
@@ -101,15 +102,15 @@ public class SwingUIMainWindow extends JFrame {
 			}
 			
 		}))));
-		fileListScroll.add(fileList);
-		lowerArea.add(fileListScroll);
+		fileListScroll = new JScrollPane(fileList);
+		centerArea.add(fileListScroll);
 		buttonHousing = new JPanel();
 		buttonHousing.setLayout(new BoxLayout(buttonHousing,BoxLayout.PAGE_AXIS));
 		buttonHousing.add(Box.createVerticalGlue());
-		top = new JButton("\u0332\n\u25B2");
+		top = new JButton("\u25B2\n\u25B2");
 		up = new JButton("\u25B2");
 		down = new JButton("\u25BC");
-		bottom = new JButton("\u25BC\n\u0332");
+		bottom = new JButton("\u25BC\n\u25BC");
 		buttonHousing.add(top);
 		buttonHousing.add(up);
 		buttonHousing.add(down);
@@ -117,8 +118,16 @@ public class SwingUIMainWindow extends JFrame {
 		up.setSize(top.getSize());
 		down.setSize(bottom.getSize());
 		buttonHousing.add(Box.createVerticalGlue());
-		lowerArea.add(buttonHousing);
-		overlay.add(lowerArea);
+		centerArea.add(buttonHousing);
+		overlay.add(centerArea,BorderLayout.CENTER);
+		bottomPanel = new JPanel();
+		bottomPanel.setLayout(new BoxLayout(bottomPanel,BoxLayout.PAGE_AXIS));
+		bottomPanel.add(Box.createHorizontalGlue());
+		set = new JButton("Grabar");
+		set.setAlignmentX(0.5f);
+		bottomPanel.add(set);
+		bottomPanel.add(Box.createHorizontalGlue());
+		overlay.add(bottomPanel,BorderLayout.SOUTH);
 		this.setSize(300, 600);
 		this.setVisible(true);
 	}
@@ -131,9 +140,11 @@ public class SwingUIMainWindow extends JFrame {
 			@Override
 			public boolean accept(File pathname) {
 				// TODO Auto-generated method stub
+				System.err.print(pathname.getName());
 				return !pathname.isDirectory();
 			}
 			
-		}))));	
+		}))));
+
 	}
 }

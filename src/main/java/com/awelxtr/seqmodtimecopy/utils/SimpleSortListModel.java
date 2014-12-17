@@ -14,6 +14,7 @@ import javax.swing.event.ListDataListener;
 public class SimpleSortListModel implements ListModel<String>{
 	
 	private SimpleSortedMap data;
+	
 	public SimpleSortListModel(Collection<File> data){
 		this.data = new SimpleSortedMap(data);
 	}
@@ -26,7 +27,7 @@ public class SimpleSortListModel implements ListModel<String>{
 	@Override
 	public String getElementAt(int index) {
 		// TODO Auto-generated method stub
-		return data.get(index).toString();
+		return ((File)data.get(index)).getName();
 	}
 
 	@Override

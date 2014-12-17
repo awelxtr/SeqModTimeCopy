@@ -1,6 +1,5 @@
 package com.awelxtr.seqmodtimecopy.utils;
 
-import java.io.File;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -86,5 +85,24 @@ public class SimpleSortedMap<Integer, File> extends HashMap<Integer,File> implem
 			while(it.hasNext())
 				i = it.next();
 			return i;
+		}
+		
+		public void decreasePosition(Integer position){
+			if (position.equals(0))
+				return;
+			else{
+				File tmp = this.get(position);
+				this.put(position, this.get((int)position-1));
+				this.put((Integer) new java.lang.Integer((int)position-1),tmp);
+			}
+		}
+		public void increasePosition(Integer position){
+			if ((int)position >= this.size())
+				return;
+			else{
+				File tmp = this.get(position);
+				this.put(position, this.get((int)position+1));
+				this.put((Integer) new java.lang.Integer((int)position+1),tmp);
+			}
 		}
 	}
