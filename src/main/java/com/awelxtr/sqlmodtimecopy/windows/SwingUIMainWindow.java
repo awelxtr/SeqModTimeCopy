@@ -40,9 +40,11 @@ public class SwingUIMainWindow extends JFrame {
 	private JButton down;
 	private JButton bottom;
 	
+	private boolean modified = false;
+	
 	public SwingUIMainWindow(){
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		this.setTitle("Que feo eres pap·");
+		this.setTitle("Que feo eres pap√°");
 		overlay = new JPanel();
 		this.setLayout(new BorderLayout());
 		this.add(overlay,BorderLayout.CENTER);
@@ -71,6 +73,10 @@ public class SwingUIMainWindow extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
+				if (modified){
+					//meeeec
+					return;
+				}
 				dirChooser.showOpenDialog(null);
 				if (dirChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION){
 					pathText.setText(dirChooser.getSelectedFile().getAbsolutePath());
@@ -85,6 +91,7 @@ public class SwingUIMainWindow extends JFrame {
 		lowerArea.setLayout(new BoxLayout(lowerArea,BoxLayout.LINE_AXIS));
 		fileListScroll = new JScrollPane();
 		fileList = new JList();
+		//see changeDir()
 		fileList.setModel(new SimpleSortListModel(Arrays.asList(new File(pathText.getText()).listFiles(new FileFilter(){
 
 			@Override
@@ -115,7 +122,18 @@ public class SwingUIMainWindow extends JFrame {
 		this.setSize(300, 600);
 		this.setVisible(true);
 	}
+	/*
+	* w/ the path name the contents of the list are refreshed
+	*/
 	private void changeDir(){
-		
+		fileList.setModel(new SimpleSortListModel(Arrays.asList(new File(pathText.getText()).listFiles(new FileFilter(){
+
+			@Override
+			public boolean accept(File pathname) {
+				// TODO Auto-generated method stub
+				return !pathname.isDirectory();
+			}
+			
+		}))));	
 	}
 }
