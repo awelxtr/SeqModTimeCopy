@@ -2,21 +2,17 @@ package com.awelxtr.seqmodtimecopy.utils;
 
 import java.io.File;
 import java.util.Collection;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Set;
-import java.util.SortedMap;
+import java.util.LinkedList;
 
 import javax.swing.ListModel;
 import javax.swing.event.ListDataListener;
 
 public class SimpleSortListModel implements ListModel<String>{
 	
-	private SimpleSortedMap data;
+	private FileList data;
 	
 	public SimpleSortListModel(Collection<File> data){
-		this.data = new SimpleSortedMap(data);
+		this.data = new FileList(data);
 	}
 	@Override
 	public int getSize() {
@@ -42,7 +38,7 @@ public class SimpleSortListModel implements ListModel<String>{
 		
 	}
 	
-	public SimpleSortedMap getData(){
+	public FileList getData(){
 		return data;
 	}
 }
