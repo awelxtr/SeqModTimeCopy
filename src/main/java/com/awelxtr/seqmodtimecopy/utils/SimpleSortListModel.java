@@ -41,4 +41,8 @@ public class SimpleSortListModel implements ListModel<String>{
 	public FileList getData(){
 		return data;
 	}
+	
+	public void setData(FileList data){
+		this.data = data;
+	}
 }

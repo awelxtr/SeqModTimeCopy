@@ -8,6 +8,9 @@ public class FileList extends LinkedList<File> {
 
 	private static final long serialVersionUID = -8818754030956547879L;
 	
+	public FileList(){
+		super();
+	}
 	public FileList(Collection<File> data) {
 		// TODO Auto-generated constructor stub
 		super(data);

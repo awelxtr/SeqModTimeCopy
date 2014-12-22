@@ -7,7 +7,10 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.FileFilter;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.ListIterator;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -18,7 +21,10 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
+import com.awelxtr.seqmodtimecopy.utils.FileList;
 import com.awelxtr.seqmodtimecopy.utils.SimpleSortListModel;
 
 public class SwingUIMainWindow extends JFrame {
@@ -43,6 +49,9 @@ public class SwingUIMainWindow extends JFrame {
 	private JButton set;
 	
 	private boolean modified = false;
+	
+	public final FileList fileData = new FileList();
+	public final ArrayList<Integer> selectedIndexes = new ArrayList<Integer>();
 	
 	public SwingUIMainWindow(){
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -92,16 +101,19 @@ public class SwingUIMainWindow extends JFrame {
 		centerArea.setLayout(new BoxLayout(centerArea,BoxLayout.LINE_AXIS));
 		
 		fileList = new JList<String>();
-		//see changeDir()
-		fileList.setModel(new SimpleSortListModel(Arrays.asList(new File(pathText.getText()).listFiles(new FileFilter(){
+		fileList.addListSelectionListener(new ListSelectionListener(){
 
 			@Override
-			public boolean accept(File pathname) {
+			public void valueChanged(ListSelectionEvent e) {
 				// TODO Auto-generated method stub
-				return !pathname.isDirectory();
+				selectedIndexes.clear();
+				for (int i: fileList.getSelectedIndices())
+					selectedIndexes.add(i);
 			}
 			
-		}))));
+		});
+		//see changeDir()
+		fileList.setModel(new SimpleSortListModel(fileData));
 		fileListScroll = new JScrollPane(fileList);
 		centerArea.add(fileListScroll);
 		buttonHousing = new JPanel();
@@ -111,6 +123,54 @@ public class SwingUIMainWindow extends JFrame {
 		up = new JButton("\u25B2");
 		down = new JButton("\u25BC");
 		bottom = new JButton("\u25BC\n\u25BC");
+		top.addActionListener(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				ListIterator<Integer> it = selectedIndexes.listIterator();
+				while(it.hasNext())
+					it.next();
+				while(it.hasPrevious())
+					fileData.toTop(it.previous());
+			}
+			
+		});
+		up.addActionListener(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				for (int i : selectedIndexes)
+					fileData.raise(i);
+				
+			}
+			
+		});
+
+		down.addActionListener(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				for (int i : selectedIndexes)
+					fileData.raise(i);
+				
+			}
+			
+		});
+		bottom.addActionListener(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				for (int i : selectedIndexes)
+					fileData.toBottom(i);
+				
+			}
+			
+		});
+
 		buttonHousing.add(top);
 		buttonHousing.add(up);
 		buttonHousing.add(down);
@@ -135,7 +195,8 @@ public class SwingUIMainWindow extends JFrame {
 	* w/ the path name the contents of the list are refreshed
 	*/
 	private void changeDir(){
-		fileList.setModel(new SimpleSortListModel(Arrays.asList(new File(pathText.getText()).listFiles(new FileFilter(){
+		fileData.clear();
+		fileData.addAll(Arrays.asList(new File(pathText.getText()).listFiles(new FileFilter(){
 
 			@Override
 			public boolean accept(File pathname) {
@@ -144,7 +205,6 @@ public class SwingUIMainWindow extends JFrame {
 				return !pathname.isDirectory();
 			}
 			
-		}))));
-
+		})));
 	}
 }
