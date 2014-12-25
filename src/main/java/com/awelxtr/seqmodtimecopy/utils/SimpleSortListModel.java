@@ -11,8 +11,8 @@ public class SimpleSortListModel implements ListModel<String>{
 	
 	private FileList data;
 	
-	public SimpleSortListModel(Collection<File> data){
-		this.data = new FileList(data);
+	public SimpleSortListModel(FileList data){
+		this.data = data;
 	}
 	@Override
 	public int getSize() {

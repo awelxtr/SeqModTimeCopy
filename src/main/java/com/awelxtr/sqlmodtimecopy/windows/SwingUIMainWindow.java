@@ -50,7 +50,7 @@ public class SwingUIMainWindow extends JFrame {
 	
 	private boolean modified = false;
 	
-	public final FileList fileData = new FileList();
+	public FileList fileData = new FileList();
 	public final ArrayList<Integer> selectedIndexes = new ArrayList<Integer>();
 	
 	public SwingUIMainWindow(){
@@ -112,7 +112,7 @@ public class SwingUIMainWindow extends JFrame {
 			}
 			
 		});
-		//see changeDir()
+		changeDir();
 		fileList.setModel(new SimpleSortListModel(fileData));
 		fileListScroll = new JScrollPane(fileList);
 		centerArea.add(fileListScroll);
@@ -131,8 +131,11 @@ public class SwingUIMainWindow extends JFrame {
 				ListIterator<Integer> it = selectedIndexes.listIterator();
 				while(it.hasNext())
 					it.next();
-				while(it.hasPrevious())
+				while(it.hasPrevious()){
 					fileData.toTop(it.previous());
+					
+				}
+				fileList.doLayout();
 			}
 			
 		});
@@ -143,6 +146,7 @@ public class SwingUIMainWindow extends JFrame {
 				// TODO Auto-generated method stub
 				for (int i : selectedIndexes)
 					fileData.raise(i);
+				fileList.doLayout();
 				
 			}
 			
@@ -155,6 +159,7 @@ public class SwingUIMainWindow extends JFrame {
 				// TODO Auto-generated method stub
 				for (int i : selectedIndexes)
 					fileData.raise(i);
+				fileList.doLayout();
 				
 			}
 			
@@ -166,7 +171,7 @@ public class SwingUIMainWindow extends JFrame {
 				// TODO Auto-generated method stub
 				for (int i : selectedIndexes)
 					fileData.toBottom(i);
-				
+				fileList.doLayout();
 			}
 			
 		});
@@ -201,10 +206,11 @@ public class SwingUIMainWindow extends JFrame {
 			@Override
 			public boolean accept(File pathname) {
 				// TODO Auto-generated method stub
-				System.err.print(pathname.getName());
+				System.err.println(pathname.getName() + "\t\t" + pathname.isDirectory());
 				return !pathname.isDirectory();
 			}
 			
 		})));
+		fileList.doLayout();
 	}
 }
