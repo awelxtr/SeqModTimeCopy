@@ -158,7 +158,7 @@ public class SwingUIMainWindow extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
 				for (int i : selectedIndexes)
-					fileData.raise(i);
+					fileData.deRaise(i);
 				fileList.doLayout();
 				
 			}
@@ -189,6 +189,19 @@ public class SwingUIMainWindow extends JFrame {
 		bottomPanel.setLayout(new BoxLayout(bottomPanel,BoxLayout.PAGE_AXIS));
 		bottomPanel.add(Box.createHorizontalGlue());
 		set = new JButton("Grabar");
+		set.addActionListener(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				ListIterator<File> it = fileData.listIterator(fileData.indexOf(fileData.getLast()));
+				it.next();
+				long time = System.currentTimeMillis();
+				for(;it.hasPrevious();time-=1000)
+					it.previous().setLastModified(time);
+			}
+			
+		});
 		set.setAlignmentX(0.5f);
 		bottomPanel.add(set);
 		bottomPanel.add(Box.createHorizontalGlue());
