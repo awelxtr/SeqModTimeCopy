@@ -7,9 +7,8 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.FileFilter;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
+import java.util.LinkedList;
 import java.util.ListIterator;
 
 import javax.swing.Box;
@@ -21,10 +20,8 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
+import javax.swing.UIManager;
 
-import com.awelxtr.seqmodtimecopy.utils.FileList;
 import com.awelxtr.seqmodtimecopy.utils.SimpleSortListModel;
 
 public class SwingUIMainWindow extends JFrame {
@@ -48,13 +45,19 @@ public class SwingUIMainWindow extends JFrame {
 	private JPanel bottomPanel;
 	private JButton set;
 	
+	private SwingUIMainWindow mainWindow;
+	
 	private boolean modified = false;
 	
-	public FileList fileData = new FileList();
-	public final ArrayList<Integer> selectedIndexes = new ArrayList<Integer>();
+	public LinkedList<File> fileData = new LinkedList<File>();
 	
 	public SwingUIMainWindow(){
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		try{
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		}catch(Exception e){
+			e.printStackTrace();
+		}
 		this.setTitle("Que feo eres pap\u00E1");
 		overlay = new JPanel();
 		this.setLayout(new BorderLayout());
@@ -101,17 +104,6 @@ public class SwingUIMainWindow extends JFrame {
 		centerArea.setLayout(new BoxLayout(centerArea,BoxLayout.LINE_AXIS));
 		
 		fileList = new JList<String>();
-		fileList.addListSelectionListener(new ListSelectionListener(){
-
-			@Override
-			public void valueChanged(ListSelectionEvent e) {
-				// TODO Auto-generated method stub
-				selectedIndexes.clear();
-				for (int i: fileList.getSelectedIndices())
-					selectedIndexes.add(i);
-			}
-			
-		});
 		changeDir();
 		fileList.setModel(new SimpleSortListModel(fileData));
 		fileListScroll = new JScrollPane(fileList);
@@ -128,13 +120,13 @@ public class SwingUIMainWindow extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				ListIterator<Integer> it = selectedIndexes.listIterator();
-				while(it.hasNext())
-					it.next();
-				while(it.hasPrevious()){
-					fileData.toTop(it.previous());
-					
-				}
+				modified = true;
+				for (int i = fileList.getSelectedIndices().length-1;i>=0;i--)
+					((SimpleSortListModel) fileList.getModel()).toTop(fileList.getSelectedIndices()[i]);
+				int amount = fileList.getSelectedIndices().length;
+				fileList.clearSelection();
+				for (int i =0;i<amount;i++)
+					fileList.setSelectedIndex(i);
 				fileList.doLayout();
 			}
 			
@@ -144,10 +136,13 @@ public class SwingUIMainWindow extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				for (int i : selectedIndexes)
-					fileData.raise(i);
-				fileList.doLayout();
-				
+				modified = true;
+				for (int i = fileList.getSelectedIndices().length-1;i>=0;i--){
+					((SimpleSortListModel) fileList.getModel()).raise(fileList.getSelectedIndices()[i]);
+					int[] si = fileList.getSelectedIndices();
+					if (si[i]>0)si[i]--;
+					fileList.setSelectedIndices(si);
+				}
 			}
 			
 		});
@@ -157,8 +152,13 @@ public class SwingUIMainWindow extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				for (int i : selectedIndexes)
-					fileData.deRaise(i);
+				modified = true;
+				for (int i = fileList.getSelectedIndices().length-1;i>=0;i--){
+					((SimpleSortListModel) fileList.getModel()).deRaise(fileList.getSelectedIndices()[i]);
+					int[] si = fileList.getSelectedIndices();
+					if (si[i] <fileList.getModel().getSize()-1)si[i]++;
+					fileList.setSelectedIndices(si);
+				}
 				fileList.doLayout();
 				
 			}
@@ -169,9 +169,15 @@ public class SwingUIMainWindow extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				for (int i : selectedIndexes)
-					fileData.toBottom(i);
+				modified = true;
+				for (int i : fileList.getSelectedIndices())
+					((SimpleSortListModel) fileList.getModel()).toBottom(i);
+				
+				int amount = fileList.getSelectedIndices().length;
+				fileList.clearSelection();
+				fileList.setSelectionInterval(fileList.getModel().getSize()-amount, fileList.getModel().getSize()-1);
 				fileList.doLayout();
+				fileList.requestFocusInWindow();
 			}
 			
 		});
@@ -199,6 +205,7 @@ public class SwingUIMainWindow extends JFrame {
 				long time = System.currentTimeMillis();
 				for(;it.hasPrevious();time-=1000)
 					it.previous().setLastModified(time);
+				modified = false;
 			}
 			
 		});
@@ -219,11 +226,11 @@ public class SwingUIMainWindow extends JFrame {
 			@Override
 			public boolean accept(File pathname) {
 				// TODO Auto-generated method stub
-				System.err.println(pathname.getName() + "\t\t" + pathname.isDirectory());
 				return !pathname.isDirectory();
 			}
 			
 		})));
+		modified = false;
 		fileList.doLayout();
 	}
 }

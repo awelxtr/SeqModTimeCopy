@@ -1,0 +1,8 @@
+Manual
+
+Pasos para usar este programa
+
+1.- En la ventana apretar botón buscar para buscar la ruta la cual ordenar ficheros. El programa funciona de carpeta en carpeta, no busca en subcarpetas
+2.- Seleccionar los archivos que se quieran ordenar (usar las teclas ctrl y mayúsculas para seleccionar varios ficheros) y cambiar el orden de la lista mediante los botones
+3.- Los botones de doble triangulo y doble triangulo invertido ponen los archivos al principio y al final de la lista respectivamente
+4.- Una vez la lista está bien ordenada, darle al botón de grabar
