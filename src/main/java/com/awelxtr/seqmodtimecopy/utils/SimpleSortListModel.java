@@ -79,8 +79,4 @@ public class SimpleSortListModel extends AbstractListModel<String>{
 		data.addLast(data.remove(i));
 		fireContentsChanged(this, 0, data.size()-1);
 	}
-	
-	public void refresh(){
-		fireContentsChanged(this,0,0);
-	}
 }

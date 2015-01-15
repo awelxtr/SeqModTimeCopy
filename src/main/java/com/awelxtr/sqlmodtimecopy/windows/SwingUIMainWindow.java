@@ -25,8 +25,6 @@ import javax.swing.UIManager;
 import com.awelxtr.seqmodtimecopy.utils.SimpleSortListModel;
 
 public class SwingUIMainWindow extends JFrame {
-	
-//	private static final Logger logger = LogManager.getLogger(SwingUIMainWindow.class);
 
 	private static final long serialVersionUID = 688717501798613673L;
 	
@@ -105,8 +103,9 @@ public class SwingUIMainWindow extends JFrame {
 		centerArea = new JPanel();
 		centerArea.setLayout(new BoxLayout(centerArea,BoxLayout.LINE_AXIS));
 		
-		fileList = new JList<String>(new SimpleSortListModel(fileData));
+		fileList = new JList<String>();
 		changeDir();
+		fileList.setModel(new SimpleSortListModel(fileData));
 		fileListScroll = new JScrollPane(fileList);
 		centerArea.add(fileListScroll);
 		buttonHousing = new JPanel();
@@ -227,14 +226,11 @@ public class SwingUIMainWindow extends JFrame {
 			@Override
 			public boolean accept(File pathname) {
 				// TODO Auto-generated method stub
-//				logger.debug(pathname);
 				return !pathname.isDirectory();
 			}
 			
 		})));
 		modified = false;
-		if (fileList.getModel().getSize()>0)
-			((SimpleSortListModel)fileList.getModel()).refresh();
 		fileList.doLayout();
 	}
 }
